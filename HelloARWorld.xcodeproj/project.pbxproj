@@ -16,6 +16,7 @@
 		358DD35C2BF8839100D78478 /* HelloARWorldUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD35B2BF8839100D78478 /* HelloARWorldUITestsLaunchTests.swift */; };
 		358DD3692BF8881600D78478 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD3682BF8881600D78478 /* ViewController.swift */; };
 		358DD36B2BF8888200D78478 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD36A2BF8888200D78478 /* ARViewContainer.swift */; };
+		35B9A2282BFD25ED0069CA86 /* Snap in Frameworks */ = {isa = PBXBuildFile; productRef = 35B9A2272BFD25ED0069CA86 /* Snap */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				35B9A2282BFD25ED0069CA86 /* Snap in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +151,9 @@
 			dependencies = (
 			);
 			name = HelloARWorld;
+			packageProductDependencies = (
+				35B9A2272BFD25ED0069CA86 /* Snap */,
+			);
 			productName = HelloARWorld;
 			productReference = 358DD33B2BF8839000D78478 /* HelloARWorld.app */;
 			productType = "com.apple.product-type.application";
@@ -221,6 +226,9 @@
 				Base,
 			);
 			mainGroup = 358DD3322BF8839000D78478;
+			packageReferences = (
+				35B9A2262BFD24540069CA86 /* XCRemoteSwiftPackageReference "Snap" */,
+			);
 			productRefGroup = 358DD33C2BF8839000D78478 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -600,6 +608,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		35B9A2262BFD24540069CA86 /* XCRemoteSwiftPackageReference "Snap" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nerdsupremacist/Snap.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		35B9A2272BFD25ED0069CA86 /* Snap */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 35B9A2262BFD24540069CA86 /* XCRemoteSwiftPackageReference "Snap" */;
+			productName = Snap;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 358DD3332BF8839000D78478 /* Project object */;
 }

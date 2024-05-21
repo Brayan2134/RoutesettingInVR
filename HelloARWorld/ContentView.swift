@@ -3,13 +3,13 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedShape: ShapeType = .sphere
     @State private var offset: CGFloat = UIScreen.main.bounds.height / 2
-    @State private var drawerState: DrawerState = .closed
+    @State private var isDrawerOpen = false
 
     var body: some View {
         ZStack {
             ARViewContainer(selectedShape: $selectedShape).edgesIgnoringSafeArea(.all)
             
-            BottomDrawer(offset: $offset, drawerState: $drawerState) {
+            BottomDrawer(offset: $offset, isDrawerOpen: $isDrawerOpen) {
                 VStack {
                     Button(action: {
                         selectedShape = .sphere
@@ -49,31 +49,52 @@ struct ContentView: View {
     
     private func closeDrawer() {
         withAnimation {
-            drawerState = .closed
+            isDrawerOpen = false
             offset = UIScreen.main.bounds.height / 2
         }
     }
 }
 
-enum DrawerState {
-    case closed
-    case open
-}
-
 struct BottomDrawer<Content: View>: View {
     @Binding var offset: CGFloat
-    @Binding var drawerState: DrawerState
+    @Binding var isDrawerOpen: Bool
     let content: Content
 
-    init(offset: Binding<CGFloat>, drawerState: Binding<DrawerState>, @ViewBuilder content: () -> Content) {
+    init(offset: Binding<CGFloat>, isDrawerOpen: Binding<Bool>, @ViewBuilder content: () -> Content) {
         self._offset = offset
-        self._drawerState = drawerState
+        self._isDrawerOpen = isDrawerOpen
         self.content = content()
     }
 
     var body: some View {
         GeometryReader { geometry in
             VStack {
+                Capsule()
+                    .frame(width: 40, height: 6)
+                    .foregroundColor(Color.gray.opacity(0.5))
+                    .padding(.top, 8)
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                let newOffset = value.translation.height + (self.isDrawerOpen ? 0 : geometry.size.height / 2)
+                                if newOffset >= 0 {
+                                    self.offset = newOffset
+                                }
+                            }
+                            .onEnded { value in
+                                if self.offset < geometry.size.height / 4 {
+                                    withAnimation {
+                                        self.isDrawerOpen = true
+                                        self.offset = 0
+                                    }
+                                } else {
+                                    withAnimation {
+                                        self.isDrawerOpen = false
+                                        self.offset = geometry.size.height / 2
+                                    }
+                                }
+                            }
+                    )
                 self.content
                 Spacer()
             }
@@ -82,33 +103,6 @@ struct BottomDrawer<Content: View>: View {
             .cornerRadius(20)
             .shadow(radius: 5)
             .offset(y: self.offset)
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        if self.drawerState == .closed {
-                            self.offset = value.translation.height + (UIScreen.main.bounds.height / 2)
-                        } else {
-                            self.offset = value.translation.height
-                        }
-                    }
-                    .onEnded { value in
-                        if self.drawerState == .closed && self.offset < (UIScreen.main.bounds.height / 4) {
-                            withAnimation {
-                                self.drawerState = .open
-                                self.offset = 0
-                            }
-                        } else if self.drawerState == .open && self.offset > (UIScreen.main.bounds.height / 4) {
-                            withAnimation {
-                                self.drawerState = .closed
-                                self.offset = UIScreen.main.bounds.height / 2
-                            }
-                        } else {
-                            withAnimation {
-                                self.offset = self.drawerState == .open ? 0 : UIScreen.main.bounds.height / 2
-                            }
-                        }
-                    }
-            )
         }
     }
 }
