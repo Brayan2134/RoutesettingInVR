@@ -62,4 +62,17 @@ struct ARViewContainer: UIViewRepresentable {
                 do {
                     let sphere = MeshResource.generateSphere(radius: 0.1)
                     let material = SimpleMaterial(color: .red, isMetallic: true)
-                    let entity = ModelEntity(mesh: sphere, materials: [material]
+                    let entity = ModelEntity(mesh: sphere, materials: [material])
+                    
+                    let anchorEntity = AnchorEntity(anchor: anchor)
+                    anchorEntity.addChild(entity)
+                    parent.arView.scene.addAnchor(anchorEntity)
+                } catch {
+                    print("Failed to create or place sphere: \(error.localizedDescription)")
+                }
+            } else {
+                print("No hit test result found")
+            }
+        }
+    }
+}
