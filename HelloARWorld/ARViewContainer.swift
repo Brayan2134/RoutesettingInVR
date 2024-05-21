@@ -2,26 +2,25 @@ import SwiftUI
 import RealityKit
 import ARKit
 
+enum ShapeType {
+    case sphere
+    case box
+    case cylinder
+}
+
 struct ARViewContainer: UIViewRepresentable {
-    // Shared instance for accessing ARViewContainer methods globally.
-    static var shared = ARViewContainer()
+    @Binding var selectedShape: ShapeType
     
-    // AR view where the AR content is rendered.
     let arView = ARView(frame: .zero)
     
-    // Creates the AR view.
     func makeUIView(context: Context) -> ARView {
-        // Configure AR session.
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal, .vertical]
-        
-        // Start the AR session.
         arView.session.run(config)
         
-        // Set up gesture recognizer for taps.
         arView.addGestureRecognizer(UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(recognizer:))))
         
-        // Add AR coaching overlay to help users find planes.
+        // Add ARCoachingOverlayView
         let coachingOverlay = ARCoachingOverlayView()
         coachingOverlay.session = arView.session
         coachingOverlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -31,23 +30,21 @@ struct ARViewContainer: UIViewRepresentable {
         return arView
     }
     
-    // Updates the AR view (not used in this simple example).
     func updateUIView(_ uiView: ARView, context: Context) {}
     
-    // Creates the coordinator for handling AR session events and gestures.
     func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+        Coordinator(self, selectedShape: $selectedShape)
     }
     
-    // Coordinator class to handle AR session events and gestures.
     class Coordinator: NSObject, ARSessionDelegate {
         var parent: ARViewContainer
+        @Binding var selectedShape: ShapeType
         
-        init(_ parent: ARViewContainer) {
+        init(_ parent: ARViewContainer, selectedShape: Binding<ShapeType>) {
             self.parent = parent
+            self._selectedShape = selectedShape
         }
         
-        // Handles tap gestures on the AR view.
         @objc func handleTap(recognizer: UITapGestureRecognizer) {
             let location = recognizer.location(in: parent.arView)
             print("Tap detected at location: \(location)")
@@ -58,21 +55,62 @@ struct ARViewContainer: UIViewRepresentable {
                 let anchor = ARAnchor(name: "object", transform: result.worldTransform)
                 parent.arView.session.add(anchor: anchor)
                 
-                // Create and place a red metallic sphere.
                 do {
-                    let sphere = MeshResource.generateSphere(radius: 0.1)
+                    let entity: ModelEntity
+                    switch selectedShape {
+                    case .sphere:
+                        let sphere = MeshResource.generateSphere(radius: 0.1)
+                        entity = ModelEntity(mesh: sphere)
+                    case .box:
+                        let box = MeshResource.generateBox(size: 0.1)
+                        entity = ModelEntity(mesh: box)
+                    case .cylinder:
+                        // Manually create a cylinder mesh
+                        entity = generateCylinder(radius: 0.05, height: 0.1)
+                    }
+                    
                     let material = SimpleMaterial(color: .red, isMetallic: true)
-                    let entity = ModelEntity(mesh: sphere, materials: [material])
+                    entity.model?.materials = [material]
                     
                     let anchorEntity = AnchorEntity(anchor: anchor)
                     anchorEntity.addChild(entity)
                     parent.arView.scene.addAnchor(anchorEntity)
                 } catch {
-                    print("Failed to create or place sphere: \(error.localizedDescription)")
+                    print("Failed to create or place shape: \(error.localizedDescription)")
                 }
             } else {
                 print("No hit test result found")
             }
+        }
+        
+        func generateCylinder(radius: Float, height: Float) -> ModelEntity {
+            var vertices: [SIMD3<Float>] = []
+            var indices: [UInt32] = []
+
+            let segments: Int = 36
+            let angle: Float = 2 * .pi / Float(segments)
+            
+            for i in 0..<segments {
+                let x = radius * cos(Float(i) * angle)
+                let z = radius * sin(Float(i) * angle)
+                vertices.append(SIMD3<Float>(x, height / 2, z))
+                vertices.append(SIMD3<Float>(x, -height / 2, z))
+            }
+            
+            for i in 0..<segments {
+                let nextIndex = (i + 1) % segments
+                indices.append(contentsOf: [
+                    UInt32(2 * i), UInt32(2 * nextIndex), UInt32(2 * i + 1),
+                    UInt32(2 * nextIndex), UInt32(2 * nextIndex + 1), UInt32(2 * i + 1)
+                ])
+            }
+            
+            var meshDescriptor = MeshDescriptor(name: "cylinder")
+            meshDescriptor.positions = MeshBuffer(vertices)
+            meshDescriptor.primitives = .triangles(indices)
+            
+            let mesh = try! MeshResource.generate(from: [meshDescriptor])
+            return ModelEntity(mesh: mesh)
         }
     }
 }
