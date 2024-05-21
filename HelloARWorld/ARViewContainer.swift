@@ -12,6 +12,13 @@ struct ARViewContainer: UIViewRepresentable {
         
         arView.addGestureRecognizer(UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(recognizer:))))
         
+        // Add ARCoachingOverlayView
+        let coachingOverlay = ARCoachingOverlayView()
+        coachingOverlay.session = arView.session
+        coachingOverlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        coachingOverlay.goal = .horizontalPlane
+        arView.addSubview(coachingOverlay)
+        
         return arView
     }
     
@@ -30,9 +37,11 @@ struct ARViewContainer: UIViewRepresentable {
         
         @objc func handleTap(recognizer: UITapGestureRecognizer) {
             let location = recognizer.location(in: parent.arView)
+            print("Tap detected at location: \(location)")
             
             let results = parent.arView.hitTest(location, types: [.existingPlaneUsingExtent])
             if let result = results.first {
+                print("Hit test result found: \(result)")
                 let anchor = ARAnchor(name: "object", transform: result.worldTransform)
                 parent.arView.session.add(anchor: anchor)
                 
@@ -43,6 +52,8 @@ struct ARViewContainer: UIViewRepresentable {
                 let anchorEntity = AnchorEntity(anchor: anchor)
                 anchorEntity.addChild(entity)
                 parent.arView.scene.addAnchor(anchorEntity)
+            } else {
+                print("No hit test result found")
             }
         }
     }
