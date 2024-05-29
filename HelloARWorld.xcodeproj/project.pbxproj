@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		35805FC42C0782D2001B3C92 /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35805FC32C0782D2001B3C92 /* OptionsViewController.swift */; };
+		35805FC62C078307001B3C92 /* OptionsViewControllerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35805FC52C078307001B3C92 /* OptionsViewControllerWrapper.swift */; };
 		358DD33F2BF8839000D78478 /* HelloARWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD33E2BF8839000D78478 /* HelloARWorldApp.swift */; };
 		358DD3412BF8839000D78478 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD3402BF8839000D78478 /* ContentView.swift */; };
 		358DD3432BF8839100D78478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 358DD3422BF8839100D78478 /* Assets.xcassets */; };
@@ -37,6 +39,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		35805FC32C0782D2001B3C92 /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
+		35805FC52C078307001B3C92 /* OptionsViewControllerWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewControllerWrapper.swift; sourceTree = "<group>"; };
 		358DD33B2BF8839000D78478 /* HelloARWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloARWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		358DD33E2BF8839000D78478 /* HelloARWorldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloARWorldApp.swift; sourceTree = "<group>"; };
 		358DD3402BF8839000D78478 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -106,6 +110,8 @@
 				358DD3442BF8839100D78478 /* Preview Content */,
 				358DD3682BF8881600D78478 /* ViewController.swift */,
 				358DD36A2BF8888200D78478 /* ARViewContainer.swift */,
+				35805FC32C0782D2001B3C92 /* OptionsViewController.swift */,
+				35805FC52C078307001B3C92 /* OptionsViewControllerWrapper.swift */,
 			);
 			path = HelloARWorld;
 			sourceTree = "<group>";
@@ -274,7 +280,9 @@
 				358DD3692BF8881600D78478 /* ViewController.swift in Sources */,
 				358DD36B2BF8888200D78478 /* ARViewContainer.swift in Sources */,
 				358DD3412BF8839000D78478 /* ContentView.swift in Sources */,
+				35805FC62C078307001B3C92 /* OptionsViewControllerWrapper.swift in Sources */,
 				358DD33F2BF8839000D78478 /* HelloARWorldApp.swift in Sources */,
+				35805FC42C0782D2001B3C92 /* OptionsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
