@@ -1,62 +1,44 @@
 import SwiftUI
+import RealityKit
+import ARKit
 
 struct ContentView: View {
-    // State property to store the selected shape type.
-    @State private var selectedShape: ShapeType = .sphere
-    
+    @State private var showModal = false
+    @State private var selectedShape: ShapeType?
+    @State private var showHint = false
+
     var body: some View {
         ZStack {
-            // ARViewContainer manages the AR session and interactions.
-            // It takes selectedShape as a binding to allow updates.
-            ARViewContainer(selectedShape: $selectedShape).edgesIgnoringSafeArea(.all)
+            ARViewContainer(selectedShape: $selectedShape, showHint: $showHint).edgesIgnoringSafeArea(.all)
             
-            // UI drawer with buttons for selecting different shapes.
             VStack {
                 Spacer()
-                HStack {
-                    Spacer()
-                    VStack {
-                        Button(action: {
-                            // Update selectedShape to sphere.
-                            selectedShape = .sphere
-                        }) {
-                            Text("Sphere")
-                                .padding()
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
-                        }
-                        Button(action: {
-                            // Update selectedShape to box.
-                            selectedShape = .box
-                        }) {
-                            Text("Box")
-                                .padding()
-                                .background(Color.green)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
-                        }
-                        Button(action: {
-                            // Update selectedShape to cylinder.
-                            selectedShape = .cylinder
-                        }) {
-                            Text("Cylinder")
-                                .padding()
-                                .background(Color.orange)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
-                        }
-                    }
-                    .padding()
+                
+                if showHint {
+                    Text("Tap to place object")
+                        .font(.headline)
+                        .padding()
+                        .background(Color.black.opacity(0.7))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .padding(.bottom, 20)
+                }
+                
+                Button(action: {
+                    showModal = true
+                }) {
+                    Text("Show Options")
+                        .font(.headline)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding()
+                .sheet(isPresented: $showModal) {
+                    OptionsViewControllerWrapper(selectedShape: $selectedShape, showHint: $showHint)
                 }
             }
         }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    // Provides a preview for SwiftUI design tools.
-    static var previews: some View {
-        ContentView()
     }
 }
