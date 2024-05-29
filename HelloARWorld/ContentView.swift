@@ -27,7 +27,7 @@ struct ContentView: View {
                 Button(action: {
                     showModal = true
                 }) {
-                    Text("Show Options")
+                    Text("Add element")
                         .font(.headline)
                         .padding()
                         .background(Color.blue)
