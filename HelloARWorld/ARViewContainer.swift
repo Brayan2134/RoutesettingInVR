@@ -34,11 +34,13 @@ struct ARViewContainer: UIViewRepresentable {
         arView.addSubview(coachingOverlay)
         
         context.coordinator.arView = arView
-        
+
         // Add observer for snap to wall functionality
         NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.snapAllObjectsToWall), name: NSNotification.Name("SnapToWall"), object: nil)
 
-        
+        // Set AR session delegate to receive plane detection updates
+        arView.session.delegate = context.coordinator
+
         return arView
     }
     
@@ -62,6 +64,7 @@ struct ARViewContainer: UIViewRepresentable {
         @Binding var selectedShape: ShapeType?
         @Binding var showHint: Bool
         var arView: ARView?
+        var detectedWalls: [ARPlaneAnchor] = []
         
         init(_ parent: ARViewContainer, selectedShape: Binding<ShapeType?>, showHint: Binding<Bool>) {
             self.parent = parent
@@ -115,14 +118,33 @@ struct ARViewContainer: UIViewRepresentable {
         
         @objc func snapAllObjectsToWall() {
             guard let arView = arView else { return }
+            guard let nearestWall = detectedWalls.first else { return } // Using the first detected wall
             
+            // Get the wall's transform
+            let wallTransform = nearestWall.transform
+            let wallPosition = simd_make_float3(wallTransform.columns.3)
+            
+            // Iterate over all anchors in the scene
             for anchor in arView.scene.anchors {
+                // Iterate over all entities attached to the anchor
                 for entity in anchor.children {
                     if let modelEntity = entity as? ModelEntity {
+                        // Snap entity to the wall plane
                         var transform = modelEntity.transform
-                        transform.translation.z = 0
+                        transform.translation.x = wallPosition.x
+                        transform.translation.y = wallPosition.y
+                        transform.translation.z = wallPosition.z
                         modelEntity.transform = transform
                     }
+                }
+            }
+        }
+        
+        // ARSessionDelegate method to track detected planes
+        func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
+            for anchor in anchors {
+                if let planeAnchor = anchor as? ARPlaneAnchor, planeAnchor.alignment == .vertical {
+                    detectedWalls.append(planeAnchor)
                 }
             }
         }
