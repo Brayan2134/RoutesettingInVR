@@ -65,6 +65,7 @@ struct ARViewContainer: UIViewRepresentable {
         @Binding var showHint: Bool
         var arView: ARView?
         var detectedWalls: [ARPlaneAnchor] = []
+        var existingObjects: [simd_float3] = [] // Store positions of existing objects
         
         init(_ parent: ARViewContainer, selectedShape: Binding<ShapeType?>, showHint: Binding<Bool>) {
             self.parent = parent
@@ -82,7 +83,15 @@ struct ARViewContainer: UIViewRepresentable {
             let results = arView.hitTest(location, types: [.existingPlaneUsingExtent])
             if let result = results.first, let shape = selectedShape {
                 print("Hit test result found: \(result)")
-                let anchor = ARAnchor(name: "object", transform: result.worldTransform)
+                
+                var position = simd_make_float3(result.worldTransform.columns.3)
+                
+                // Check for collisions and adjust position if necessary
+                if isColliding(with: position) {
+                    position.z += 0.2 // Adjust z-axis offset to avoid collision
+                }
+                
+                let anchor = ARAnchor(name: "object", transform: float4x4(translation: position))
                 arView.session.add(anchor: anchor)
                 
                 let entity: ModelEntity
@@ -108,12 +117,26 @@ struct ARViewContainer: UIViewRepresentable {
                 anchorEntity.addChild(entity)
                 arView.scene.addAnchor(anchorEntity)
                 
+                // Store the position of the new object
+                existingObjects.append(position)
+                
                 // Hide the hint after placing the object
                 showHint = false
                 selectedShape = nil
             } else {
                 print("No hit test result found")
             }
+        }
+        
+        // Function to check if a new position collides with any existing objects
+        func isColliding(with position: simd_float3) -> Bool {
+            let collisionDistance: Float = 0.2 // Define a suitable collision distance
+            for existingPosition in existingObjects {
+                if distance(position, existingPosition) < collisionDistance {
+                    return true
+                }
+            }
+            return false
         }
         
         @objc func snapAllObjectsToWall() {
@@ -184,3 +207,12 @@ struct ARViewContainer: UIViewRepresentable {
         }
     }
 }
+
+// Helper function to create a translation matrix
+extension float4x4 {
+    init(translation: simd_float3) {
+        self = matrix_identity_float4x4
+        self.columns.3 = simd_float4(translation, 1.0)
+    }
+}
+
