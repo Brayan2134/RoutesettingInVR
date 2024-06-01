@@ -35,6 +35,10 @@ struct ARViewContainer: UIViewRepresentable {
         
         context.coordinator.arView = arView
         
+        // Add observer for snap to wall functionality
+        NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.snapAllObjectsToWall), name: NSNotification.Name("SnapToWall"), object: nil)
+
+        
         return arView
     }
     
@@ -106,6 +110,20 @@ struct ARViewContainer: UIViewRepresentable {
                 selectedShape = nil
             } else {
                 print("No hit test result found")
+            }
+        }
+        
+        @objc func snapAllObjectsToWall() {
+            guard let arView = arView else { return }
+            
+            for anchor in arView.scene.anchors {
+                for entity in anchor.children {
+                    if let modelEntity = entity as? ModelEntity {
+                        var transform = modelEntity.transform
+                        transform.translation.z = 0
+                        modelEntity.transform = transform
+                    }
+                }
             }
         }
         
