@@ -87,7 +87,7 @@ struct ARViewContainer: UIViewRepresentable {
                 var position = simd_make_float3(result.worldTransform.columns.3)
                 
                 // Check for collisions and adjust position if necessary
-                if isColliding(with: position) {
+                while isColliding(with: position, shape: shape) {
                     position.z += 0.2 // Adjust z-axis offset to avoid collision
                 }
                 
@@ -129,7 +129,7 @@ struct ARViewContainer: UIViewRepresentable {
         }
         
         // Function to check if a new position collides with any existing objects
-        func isColliding(with position: simd_float3) -> Bool {
+        func isColliding(with position: simd_float3, shape: ShapeType) -> Bool {
             let collisionDistance: Float = 0.2 // Define a suitable collision distance
             for existingPosition in existingObjects {
                 if distance(position, existingPosition) < collisionDistance {
