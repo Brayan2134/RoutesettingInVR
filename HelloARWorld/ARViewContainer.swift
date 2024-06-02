@@ -13,36 +13,38 @@ struct ARViewContainer: UIViewRepresentable {
     // Binding properties to keep track of the selected shape and hint visibility.
     @Binding var selectedShape: ShapeType?
     @Binding var showHint: Bool
+    @Binding var isARCoachActive: Bool
     
     func makeUIView(context: Context) -> ARView {
-        let arView = ARView(frame: .zero)
-        
-        // Configure AR session for horizontal and vertical plane detection.
-        let config = ARWorldTrackingConfiguration()
-        config.planeDetection = [.horizontal, .vertical]
-        arView.session.run(config)
-        
-        // Add gesture recognizer for tap interactions.
-        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(recognizer:)))
-        arView.addGestureRecognizer(tapGesture)
-        
-        // Add ARCoachingOverlayView to guide users for better plane detection.
-        let coachingOverlay = ARCoachingOverlayView()
-        coachingOverlay.session = arView.session
-        coachingOverlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        coachingOverlay.goal = .horizontalPlane
-        arView.addSubview(coachingOverlay)
-        
-        context.coordinator.arView = arView
+         let arView = ARView(frame: .zero)
+         
+         // Configure AR session for horizontal and vertical plane detection.
+         let config = ARWorldTrackingConfiguration()
+         config.planeDetection = [.horizontal, .vertical]
+         arView.session.run(config)
+         
+         // Add gesture recognizer for tap interactions.
+         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(recognizer:)))
+         arView.addGestureRecognizer(tapGesture)
+         
+         // Add ARCoachingOverlayView to guide users for better plane detection.
+         let coachingOverlay = ARCoachingOverlayView()
+         coachingOverlay.session = arView.session
+         coachingOverlay.delegate = context.coordinator // Set delegate to handle coaching events
+         coachingOverlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+         coachingOverlay.goal = .horizontalPlane
+         arView.addSubview(coachingOverlay)
+         
+         context.coordinator.arView = arView
 
-        // Add observer for snap to wall functionality
-        NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.snapAllObjectsToWall), name: NSNotification.Name("SnapToWall"), object: nil)
+         // Add observer for snap to wall functionality
+         NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.snapAllObjectsToWall), name: NSNotification.Name("SnapToWall"), object: nil)
 
-        // Set AR session delegate to receive plane detection updates
-        arView.session.delegate = context.coordinator
+         // Set AR session delegate to receive plane detection updates
+         arView.session.delegate = context.coordinator
 
-        return arView
-    }
+         return arView
+     }
     
     func updateUIView(_ uiView: ARView, context: Context) {
         // This function can be used to update the view when state changes.
@@ -56,21 +58,22 @@ struct ARViewContainer: UIViewRepresentable {
     
     func makeCoordinator() -> Coordinator {
         // Create and return a coordinator to handle AR session events and gestures.
-        Coordinator(self, selectedShape: $selectedShape, showHint: $showHint)
+        Coordinator(selectedShape: $selectedShape, showHint: $showHint, isARCoachActive: $isARCoachActive)
     }
     
-    class Coordinator: NSObject, ARSessionDelegate {
-        var parent: ARViewContainer
+    // Coordinator to manage AR interactions and delegate methods.
+    class Coordinator: NSObject, ARCoachingOverlayViewDelegate, ARSessionDelegate {
         @Binding var selectedShape: ShapeType?
         @Binding var showHint: Bool
+        @Binding var isARCoachActive: Bool
         var arView: ARView?
         var detectedWalls: [ARPlaneAnchor] = []
         var existingObjects: [simd_float3] = [] // Store positions of existing objects
         
-        init(_ parent: ARViewContainer, selectedShape: Binding<ShapeType?>, showHint: Binding<Bool>) {
-            self.parent = parent
-            self._selectedShape = selectedShape
-            self._showHint = showHint
+        init(selectedShape: Binding<ShapeType?>, showHint: Binding<Bool>, isARCoachActive: Binding<Bool>) {
+                    self._selectedShape = selectedShape
+                    self._showHint = showHint
+                    self._isARCoachActive = isARCoachActive
         }
         
         // Handle tap gestures on the AR view.
@@ -126,6 +129,19 @@ struct ARViewContainer: UIViewRepresentable {
             } else {
                 print("No hit test result found")
             }
+        }
+        
+        // ARCoachingOverlayView delegate methods
+        func coachingOverlayViewWillActivate(_ coachingOverlayView: ARCoachingOverlayView) {
+            isARCoachActive = true // Set isARCoachActive to true when coaching overlay is active
+        }
+
+        func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
+            isARCoachActive = false // Set isARCoachActive to false when coaching overlay is inactive
+        }
+
+        func coachingOverlayViewDidRequestSessionReset(_ coachingOverlayView: ARCoachingOverlayView) {
+            // Handle session reset request if needed.
         }
         
         // Function to check if a new position collides with any existing objects
