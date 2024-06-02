@@ -6,7 +6,6 @@ class OptionsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
     }
 
@@ -34,9 +33,27 @@ class OptionsViewController: UIViewController {
         spacer.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(spacer)
         
-        // Subheading Label
+        // Quick Options subheading
+        let quickOptionsLabel = UILabel()
+        quickOptionsLabel.text = "Quick Options"
+        quickOptionsLabel.textColor = .black
+        quickOptionsLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        quickOptionsLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(quickOptionsLabel)
+
+        // Snap to Wall button
+        let snapButton = UIButton(type: .system)
+        snapButton.setTitle("Snap objects to wall", for: .normal)
+        snapButton.backgroundColor = UIColor(red: 24/255, green: 24/255, blue: 24/255, alpha: 1.0)
+        snapButton.setTitleColor(.white, for: .normal)
+        snapButton.layer.cornerRadius = 8
+        snapButton.translatesAutoresizingMaskIntoConstraints = false
+        snapButton.addTarget(self, action: #selector(snapToWallButtonTapped), for: .touchUpInside)
+        view.addSubview(snapButton)
+    
+        // Basic Shapes subheading
         let subheadingLabel = UILabel()
-        subheadingLabel.text = "basic shapes"
+        subheadingLabel.text = "Basic Shapes"
         subheadingLabel.textColor = .black
         subheadingLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         subheadingLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +112,15 @@ class OptionsViewController: UIViewController {
             spacer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             spacer.heightAnchor.constraint(equalToConstant: 1),
             
-            subheadingLabel.topAnchor.constraint(equalTo: spacer.bottomAnchor, constant: 20),
+            quickOptionsLabel.topAnchor.constraint(equalTo: spacer.bottomAnchor, constant: 20),
+            quickOptionsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            
+            snapButton.topAnchor.constraint(equalTo: quickOptionsLabel.bottomAnchor, constant: 10),
+            snapButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            snapButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5, constant: -30),
+            snapButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            subheadingLabel.topAnchor.constraint(equalTo: snapButton.bottomAnchor, constant: 20),
             subheadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
             carouselStackView.topAnchor.constraint(equalTo: subheadingLabel.bottomAnchor, constant: 20),
@@ -121,5 +146,10 @@ class OptionsViewController: UIViewController {
         
         // Close the UI
         dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func snapToWallButtonTapped() {
+        print("USER PRESSED BUTTON: snapToWallButton")
+        NotificationCenter.default.post(name: NSNotification.Name("SnapToWall"), object: nil)
     }
 }

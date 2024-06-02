@@ -34,7 +34,13 @@ struct ARViewContainer: UIViewRepresentable {
         arView.addSubview(coachingOverlay)
         
         context.coordinator.arView = arView
-        
+
+        // Add observer for snap to wall functionality
+        NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.snapAllObjectsToWall), name: NSNotification.Name("SnapToWall"), object: nil)
+
+        // Set AR session delegate to receive plane detection updates
+        arView.session.delegate = context.coordinator
+
         return arView
     }
     
@@ -58,6 +64,8 @@ struct ARViewContainer: UIViewRepresentable {
         @Binding var selectedShape: ShapeType?
         @Binding var showHint: Bool
         var arView: ARView?
+        var detectedWalls: [ARPlaneAnchor] = []
+        var existingObjects: [simd_float3] = [] // Store positions of existing objects
         
         init(_ parent: ARViewContainer, selectedShape: Binding<ShapeType?>, showHint: Binding<Bool>) {
             self.parent = parent
@@ -75,7 +83,15 @@ struct ARViewContainer: UIViewRepresentable {
             let results = arView.hitTest(location, types: [.existingPlaneUsingExtent])
             if let result = results.first, let shape = selectedShape {
                 print("Hit test result found: \(result)")
-                let anchor = ARAnchor(name: "object", transform: result.worldTransform)
+                
+                var position = simd_make_float3(result.worldTransform.columns.3)
+                
+                // Check for collisions and adjust position if necessary
+                while isColliding(with: position, shape: shape) {
+                    position.z += 0.2 // Adjust z-axis offset to avoid collision
+                }
+                
+                let anchor = ARAnchor(name: "object", transform: float4x4(translation: position))
                 arView.session.add(anchor: anchor)
                 
                 let entity: ModelEntity
@@ -101,11 +117,58 @@ struct ARViewContainer: UIViewRepresentable {
                 anchorEntity.addChild(entity)
                 arView.scene.addAnchor(anchorEntity)
                 
+                // Store the position of the new object
+                existingObjects.append(position)
+                
                 // Hide the hint after placing the object
                 showHint = false
                 selectedShape = nil
             } else {
                 print("No hit test result found")
+            }
+        }
+        
+        // Function to check if a new position collides with any existing objects
+        func isColliding(with position: simd_float3, shape: ShapeType) -> Bool {
+            let collisionDistance: Float = 0.2 // Define a suitable collision distance
+            for existingPosition in existingObjects {
+                if distance(position, existingPosition) < collisionDistance {
+                    return true
+                }
+            }
+            return false
+        }
+        
+        @objc func snapAllObjectsToWall() {
+            guard let arView = arView else { return }
+            guard let nearestWall = detectedWalls.first else { return } // Using the first detected wall
+            
+            // Get the wall's transform
+            let wallTransform = nearestWall.transform
+            let wallPosition = simd_make_float3(wallTransform.columns.3)
+            
+            // Iterate over all anchors in the scene
+            for anchor in arView.scene.anchors {
+                // Iterate over all entities attached to the anchor
+                for entity in anchor.children {
+                    if let modelEntity = entity as? ModelEntity {
+                        // Snap entity to the wall plane
+                        var transform = modelEntity.transform
+                        transform.translation.x = wallPosition.x
+                        transform.translation.y = wallPosition.y
+                        transform.translation.z = wallPosition.z
+                        modelEntity.transform = transform
+                    }
+                }
+            }
+        }
+        
+        // ARSessionDelegate method to track detected planes
+        func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
+            for anchor in anchors {
+                if let planeAnchor = anchor as? ARPlaneAnchor, planeAnchor.alignment == .vertical {
+                    detectedWalls.append(planeAnchor)
+                }
             }
         }
         
@@ -144,3 +207,12 @@ struct ARViewContainer: UIViewRepresentable {
         }
     }
 }
+
+// Helper function to create a translation matrix
+extension float4x4 {
+    init(translation: simd_float3) {
+        self = matrix_identity_float4x4
+        self.columns.3 = simd_float4(translation, 1.0)
+    }
+}
+
