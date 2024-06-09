@@ -18,7 +18,6 @@
 		358DD35C2BF8839100D78478 /* HelloARWorldUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD35B2BF8839100D78478 /* HelloARWorldUITestsLaunchTests.swift */; };
 		358DD3692BF8881600D78478 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD3682BF8881600D78478 /* ViewController.swift */; };
 		358DD36B2BF8888200D78478 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD36A2BF8888200D78478 /* ARViewContainer.swift */; };
-		35B9A2282BFD25ED0069CA86 /* Snap in Frameworks */ = {isa = PBXBuildFile; productRef = 35B9A2272BFD25ED0069CA86 /* Snap */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,7 +40,7 @@
 /* Begin PBXFileReference section */
 		35805FC32C0782D2001B3C92 /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
 		35805FC52C078307001B3C92 /* OptionsViewControllerWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewControllerWrapper.swift; sourceTree = "<group>"; };
-		358DD33B2BF8839000D78478 /* HelloARWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloARWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		358DD33B2BF8839000D78478 /* RoutesetAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RoutesetAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		358DD33E2BF8839000D78478 /* HelloARWorldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloARWorldApp.swift; sourceTree = "<group>"; };
 		358DD3402BF8839000D78478 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		358DD3422BF8839100D78478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -60,7 +59,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				35B9A2282BFD25ED0069CA86 /* Snap in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,7 +92,7 @@
 		358DD33C2BF8839000D78478 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				358DD33B2BF8839000D78478 /* HelloARWorld.app */,
+				358DD33B2BF8839000D78478 /* RoutesetAR.app */,
 				358DD34B2BF8839100D78478 /* HelloARWorldTests.xctest */,
 				358DD3552BF8839100D78478 /* HelloARWorldUITests.xctest */,
 			);
@@ -158,10 +156,9 @@
 			);
 			name = HelloARWorld;
 			packageProductDependencies = (
-				35B9A2272BFD25ED0069CA86 /* Snap */,
 			);
 			productName = HelloARWorld;
-			productReference = 358DD33B2BF8839000D78478 /* HelloARWorld.app */;
+			productReference = 358DD33B2BF8839000D78478 /* RoutesetAR.app */;
 			productType = "com.apple.product-type.application";
 		};
 		358DD34A2BF8839100D78478 /* HelloARWorldTests */ = {
@@ -462,7 +459,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = brayanquevedoramos.HelloARWorld;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RoutesetAR;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -493,7 +490,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = brayanquevedoramos.HelloARWorld;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RoutesetAR;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -627,14 +624,6 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		35B9A2272BFD25ED0069CA86 /* Snap */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 35B9A2262BFD24540069CA86 /* XCRemoteSwiftPackageReference "Snap" */;
-			productName = Snap;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 358DD3332BF8839000D78478 /* Project object */;
 }
