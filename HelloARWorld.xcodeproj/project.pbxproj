@@ -18,6 +18,9 @@
 		358DD35C2BF8839100D78478 /* HelloARWorldUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD35B2BF8839100D78478 /* HelloARWorldUITestsLaunchTests.swift */; };
 		358DD3692BF8881600D78478 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD3682BF8881600D78478 /* ViewController.swift */; };
 		358DD36B2BF8888200D78478 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DD36A2BF8888200D78478 /* ARViewContainer.swift */; };
+		3597C7B32C16167600B7DB46 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3597C7B22C16167600B7DB46 /* MainView.swift */; };
+		3597C7B52C1616B100B7DB46 /* SocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3597C7B42C1616B100B7DB46 /* SocialView.swift */; };
+		3597C7B72C1616C000B7DB46 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3597C7B62C1616C000B7DB46 /* ProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +55,9 @@
 		358DD35B2BF8839100D78478 /* HelloARWorldUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloARWorldUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		358DD3682BF8881600D78478 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		358DD36A2BF8888200D78478 /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
+		3597C7B22C16167600B7DB46 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		3597C7B42C1616B100B7DB46 /* SocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView.swift; sourceTree = "<group>"; };
+		3597C7B62C1616C000B7DB46 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +116,9 @@
 				358DD36A2BF8888200D78478 /* ARViewContainer.swift */,
 				35805FC32C0782D2001B3C92 /* OptionsViewController.swift */,
 				35805FC52C078307001B3C92 /* OptionsViewControllerWrapper.swift */,
+				3597C7B22C16167600B7DB46 /* MainView.swift */,
+				3597C7B42C1616B100B7DB46 /* SocialView.swift */,
+				3597C7B62C1616C000B7DB46 /* ProfileView.swift */,
 			);
 			path = HelloARWorld;
 			sourceTree = "<group>";
@@ -275,6 +284,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				358DD3692BF8881600D78478 /* ViewController.swift in Sources */,
+				3597C7B72C1616C000B7DB46 /* ProfileView.swift in Sources */,
+				3597C7B52C1616B100B7DB46 /* SocialView.swift in Sources */,
+				3597C7B32C16167600B7DB46 /* MainView.swift in Sources */,
 				358DD36B2BF8888200D78478 /* ARViewContainer.swift in Sources */,
 				358DD3412BF8839000D78478 /* ContentView.swift in Sources */,
 				35805FC62C078307001B3C92 /* OptionsViewControllerWrapper.swift in Sources */,
