@@ -19,6 +19,19 @@ struct MainView: View {
                     Text("Profile")
                 }
         }
+        .onAppear {
+            // Configure tab bar appearance to ensure it is always visible
+            setupTabBarAppearance()
+        }
+    }
+    
+    // Function to ensure the tab bar remains visible
+    func setupTabBarAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor.systemBackground
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+        UITabBar.appearance().standardAppearance = appearance
     }
 }
 
